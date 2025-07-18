@@ -1,0 +1,405 @@
+{% extends "base.html" %}
+{% block title %}Checkout{% endblock %}
+
+{% block content %}
+
+<style>
+    /* Checkout Page Styles */
+    .checkout-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 2rem 0;
+    }
+
+    .checkout-header {
+        text-align: center;
+        margin-bottom: 3rem;
+        position: relative;
+    }
+
+    .checkout-header h2 {
+        font-size: 2.8rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 0.5rem;
+        position: relative;
+    }
+
+    .checkout-header::after {
+        content: '';
+        position: absolute;
+        bottom: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background: linear-gradient(90deg, #667eea, #764ba2);
+        border-radius: 2px;
+    }
+
+    /* Modern form container */
+    .checkout-form {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 25px;
+        padding: 3rem;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        position: relative;
+        overflow: hidden;
+        animation: formSlideIn 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    .checkout-form::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #f5576c);
+        background-size: 400% 400%;
+        animation: gradientShift 3s ease infinite;
+    }
+
+    @keyframes formSlideIn {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes gradientShift {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+    }
+
+    /* Form group styling */
+    .mb-3 {
+        margin-bottom: 2rem !important;
+        position: relative;
+    }
+
+    /* Modern form labels */
+    .form-label {
+        font-weight: 600 !important;
+        color: #2d3748 !important;
+        font-size: 1.1rem !important;
+        margin-bottom: 0.8rem !important;
+        display: block;
+        position: relative;
+        transition: all 0.3s ease;
+    }
+
+    .form-label::before {
+        content: '';
+        position: absolute;
+        left: -15px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 4px;
+        height: 0;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 2px;
+        transition: height 0.3s ease;
+    }
+
+    .form-control:focus + .form-label::before,
+    .form-control:not(:placeholder-shown) + .form-label::before {
+        height: 100%;
+    }
+
+    /* Enhanced form controls */
+    .form-control {
+        border: 2px solid #e2e8f0 !important;
+        border-radius: 15px !important;
+        padding: 1rem 1.5rem !important;
+        font-size: 1rem !important;
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        background: rgba(255, 255, 255, 0.9) !important;
+        backdrop-filter: blur(10px);
+        position: relative;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .form-control:focus {
+        border-color: #667eea !important;
+        box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1), 0 8px 25px rgba(102, 126, 234, 0.15) !important;
+        outline: none !important;
+        transform: translateY(-2px);
+        background: rgba(255, 255, 255, 1) !important;
+    }
+
+    .form-control:hover:not(:focus) {
+        border-color: #cbd5e0 !important;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Textarea specific styling */
+    textarea.form-control {
+        resize: vertical;
+        min-height: 120px;
+        font-family: inherit;
+        line-height: 1.6;
+    }
+
+    /* Input validation states */
+    .form-control:valid {
+        border-color: #48bb78 !important;
+    }
+
+    .form-control:invalid:not(:placeholder-shown) {
+        border-color: #f56565 !important;
+    }
+
+    /* Floating label effect */
+    .form-floating {
+        position: relative;
+    }
+
+    .form-floating .form-control {
+        padding-top: 1.625rem;
+        padding-bottom: 0.625rem;
+    }
+
+    .form-floating .form-label {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        padding: 1rem 1.5rem;
+        pointer-events: none;
+        border: 1px solid transparent;
+        transform-origin: 0 0;
+        transition: opacity 0.1s ease-in-out, transform 0.1s ease-in-out;
+    }
+
+    /* Modern submit button */
+    .btn-success {
+        background: linear-gradient(135deg, #48bb78 0%, #38a169 100%) !important;
+        border: none !important;
+        border-radius: 50px !important;
+        padding: 1.2rem 3rem !important;
+        font-size: 1.2rem !important;
+        font-weight: 700 !important;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        position: relative;
+        overflow: hidden;
+        width: 100%;
+        margin-top: 2rem;
+        box-shadow: 0 10px 30px rgba(72, 187, 120, 0.3);
+    }
+
+    .btn-success::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.6s ease;
+    }
+
+    .btn-success:hover::before {
+        left: 100%;
+    }
+
+    .btn-success:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(72, 187, 120, 0.4);
+        background: linear-gradient(135deg, #38a169 0%, #2f855a 100%) !important;
+    }
+
+    .btn-success:active {
+        transform: translateY(-2px);
+    }
+
+    /* Loading state for submit button */
+    .btn-success.loading {
+        color: transparent !important;
+        pointer-events: none;
+    }
+
+    .btn-success.loading::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 24px;
+        height: 24px;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top-color: #fff;
+        animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+        to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    /* Form icons */
+    .input-icon {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #a0aec0;
+        transition: color 0.3s ease;
+        pointer-events: none;
+    }
+
+    .form-control:focus ~ .input-icon {
+        color: #667eea;
+    }
+
+    /* Progress indicator */
+    .checkout-progress {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 2rem;
+        gap: 1rem;
+    }
+
+    .progress-step {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #e2e8f0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        color: #a0aec0;
+        transition: all 0.3s ease;
+    }
+
+    .progress-step.active {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        transform: scale(1.1);
+    }
+
+    .progress-step.completed {
+        background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+        color: white;
+    }
+
+    /* Security badge */
+    .security-badge {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-top: 1.5rem;
+        padding: 1rem;
+        background: rgba(72, 187, 120, 0.1);
+        border-radius: 15px;
+        color: #2f855a;
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    .security-icon {
+        width: 20px;
+        height: 20px;
+        fill: currentColor;
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+        .checkout-container {
+            padding: 1rem;
+        }
+        
+        .checkout-form {
+            padding: 2rem 1.5rem;
+        }
+        
+        .checkout-header h2 {
+            font-size: 2.2rem;
+        }
+        
+        .btn-success {
+            padding: 1rem 2rem !important;
+            font-size: 1.1rem !important;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .checkout-header h2 {
+            font-size: 1.8rem;
+        }
+        
+        .form-control {
+            padding: 0.8rem 1rem !important;
+        }
+    }
+
+    /* Form animation on load */
+    .form-group {
+        animation: fadeInUp 0.6s ease-out;
+        animation-fill-mode: both;
+    }
+
+    .form-group:nth-child(1) { animation-delay: 0.1s; }
+    .form-group:nth-child(2) { animation-delay: 0.2s; }
+    .form-group:nth-child(3) { animation-delay: 0.3s; }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<div class="checkout-container">
+    <div class="checkout-header">
+        <h2>Checkout</h2>
+    </div>
+
+    <div class="checkout-progress">
+        <div class="progress-step completed">1</div>
+        <div class="progress-step active">2</div>
+        <div class="progress-step">3</div>
+    </div>
+
+    <form method="POST" class="checkout-form">
+        <div class="mb-3 form-group">
+            <label for="name" class="form-label">👤 Full Name</label>
+            <input type="text" class="form-control" id="name" name="name" placeholder="Enter your full name" required>
+        </div>
+        
+        <div class="mb-3 form-group">
+            <label for="address" class="form-label">📍 Delivery Address</label>
+            <textarea class="form-control" id="address" name="address" rows="3" placeholder="Enter your complete delivery address" required></textarea>
+        </div>
+        
+        <button type="submit" class="btn btn-success">🛒 Place Order</button>
+        
+        <div class="security-badge">
+            <svg class="security-icon" viewBox="0 0 24 24">
+                <path d="M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1M12,7C13.4,7 14.8,8.6 14.8,10V11H16V16H8V11H9.2V10C9.2,8.6 10.6,7 12,7M12,8.2C11.2,8.2 10.4,8.7 10.4,10V11H13.6V10C13.6,8.7 12.8,8.2 12,8.2Z"/>
+            </svg>
+            Your information is secure and encrypted
+        </div>
+    </form>
+</div>
+
+{% endblock %}
