@@ -63,6 +63,3 @@ Optional Improvements:
 - Product categories, filtering, or search
 - Quantity selector in cart
 
-License:
---------
-This project is free to use for learning and development purposes.
